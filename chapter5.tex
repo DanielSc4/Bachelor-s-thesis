@@ -1,0 +1,25 @@
+%!TEX root = ../thesis.tex
+%*******************************************************************************
+%****************************** Third Chapter **********************************
+%*******************************************************************************
+\chapter{Conlusioni e sviluppi futuri}
+\hspace{0,5cm} 
+\section{Conclusioni sul lavoro svolto}
+
+La ricerca presenta una serie di valide proposte per la classificazione di commenti relativi ai discorsi d'odio online: i risultati ottenuti mostrano diverse strade percorribili ognuna con i propri vantaggi e svantaggi. È stato preso in analisi TikTok, un social network nato solo di recente, le cui dinamiche differiscono completamente da quelle tradizionali di piattaforme più conosciute e consolidate come Instagram, Twitter e Facebook. 
+
+
+Dopo una prima fase di raccolta di dati, diversi sistemi di classificazione sono stati messi a confronto partendo dalla semplice analisi del lessico, fino ad arrivare all'uso di modelli rappresentanti lo stato dell'arte nel riconoscimento del linguaggio naturale.
+Per la fase di addestramento della rete neurale è stato generato un dataset di commenti classificati manualmente definendo delle linee guida che permettessero al modello di apprendere la differenza tra un commento positivo e uno offensivo. È stata ulteriormente enfatizzata la differenza tra i commenti difensivi e offensivi che, pur condividendo gran parte del lessico, sono state distinte due classi diverse: questa scelta ha sicuramente influenzato le prestazioni del modello, il quale però ha dimostrato una buona capacità nel comprendere il contesto ivi una singola parola è inserita.
+
+È stato successivamente applicato un processo di fine tuning che ha permesso la specializzazione della rete neurale in un task specifico riuscendo a migliorare di molto la precisione della classificazione. Una volta effettuati i diversi test ed aver trovato la combinazione di parametri migliori è stato altresì svolto un lavoro di ottimizzazione aggiungendo diversi tipi di layer dopo BERT che permettessero una maggiore specializzazione nel compito da svolgere. Tra le due prove effettuate solo la seconda, con l'aggiunta di layers lineari e di regolarizzazione, ha ottenuto prestazioni superiori, migliorando a tutti gli effetti la performance peraltro già molto buona di BERT. La prima prova invece, effettuata aggiungendo un layer di tipo Bi-LSTM, ha mantenuto delle performance quasi al pari di BERT per via dei suoi aspetti tecnici analizzati nei capitoli precedenti.
+
+
+\section{Possibili miglioramenti proposti e sviluppi futuri}
+È possibile estrapolare dal lavoro svolto alcuni possibili miglioramenti.
+
+In primis, come accennato durante l'analisi dei risultati delle modifiche apportate a BERT, si è dimostrata necessaria l'analisi di un dataset dalle dimensioni maggiori. Le reti neurali profonde, come quelle utilizzate per la classificazione vista nei capitoli precedenti, necessitano di una grande quantità di dati per essere funzionali e mantenere le buone performance in un contesto reale, prescindendo da una classica fase di validazione.
+
+Inoltre, con una maggiore quantità di dati, sarebbe possibile effettuare nuovi esperimenti partendo dalla base delle modifiche proposte o utilizzare nuovi modelli di base che migliorano le già ottime prestazioni di BERT (e.g. RoBERTa svilupatto dal Facebook AI in \cite{roberta}). Il problema principale, in entrambi i casi, è rappresentato dal fenomeno di overfittig che ha limitato la possibilità di ampliare ulteriormente la rete neurale o sfruttare appieno le caratteristiche intrinseche dei vari layer aggiunti.
+
+Ultimo possibile miglioramento è rappresentato dal numero di features considerato dalla rete neurale. Nello studio riportato in tesi il modello riceve in input solamente il testo del commento, tuttavia viene ignorato il contesto entro il quale lo stesso è stato pubblicato. Di conseguenza in molti casi conoscere delle informazioni aggiuntive relative al post di provenienza o il commento principale in caso di una risposta a cascata, aiuterebbe nel compito di classificazione, fornendo ulteriori dettagli come base di partenza.

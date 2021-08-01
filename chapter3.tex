@@ -1,0 +1,100 @@
+%!TEX root = ../thesis.tex
+%*******************************************************************************
+%****************************** Third Chapter **********************************
+%*******************************************************************************
+
+\chapter{Framework proposto}
+\label{sec:FrameworkProposto}
+\hspace{0,5cm}
+
+
+
+
+\section{Overview del sistema proposto}
+
+La ricerca svolta copre l'intero processo di raccolta e classificazione dei commenti partendo dalla raccolta dei dati fino al proponimento di diversi sistemi di riconoscimento dei discorsi d'odio. In figura \ref{fig:diag1} è proposto un diagramma di flusso descrittivo del percorso seguito durante lo studio. 
+
+La prima fase fondamentale, utile a raccogliere il maggior numero di dati, è l'estrazione dei commenti da TikTok; successivamente le informazioni raccolte devono essere pulite dagli elementi poco utili ai fini della classificazione come messaggi di spam o eventuali errori.
+
+Dopodiché vengono applicati e analizzati due metodi di classificazione differenti: il primo ha come obiettivo la segnalazione di lemmi offensivi o denigratori all'interno dei commenti, il secondo invece prevede il fine tuning di un modello per il riconoscimento del linguaggio naturale.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/diagrams/flowchart thesis.png}
+    \caption{Diagramma di flusso riepilogativo del lavoro svolto}
+    \label{fig:diag1}
+\end{figure}
+
+
+Il primo metodo di classificazione prevede dapprima l'estrazione dei lemmi da ogni commento scaricato e, successivamente, un confronto con un lessico di termini offensivi e denigratori. Una volta ottenuti i risultati sarà possibile effettuare una valutazione qualitativa degli stessi per giudicare quanto il metodo di classificazione sia stato preciso nel riconoscere i commenti positivi da quelli offensivi.
+
+Il secondo metodo di classificazione previsto dallo studio comprende l'utilizzo di un modello in grado di comprendere il linguaggio naturale sul quale effettuare fine tuning. Per questa fase è necessario classificare manualmente un sottoinsieme di commenti presi dai dati originariamente scaricati seguendo una serie di linee guida specificate in seguito. Come già visto per il metodo di classificazione precedente, viene effettuata una valutazione dei risultati in output adottando diverse configurazioni dei parametri della rete neurale profonda. Una volta trovata la migliore combinazione vengono svolte alcune ulteriori ottimizzazioni modificando la rete neurale per migliorarne ulteriormente le prestazioni. 
+
+Tutti i risultati ottenuti vengono infine messi a confronto per determinare quale sia stato il miglior metodo di classificazione trovato.
+
+
+
+
+
+\section{Raccolta e gestione dei dati}
+In seguito alle restrizioni sulla privacy degli utenti nei social network nel corso degli ultimi anni, il processo di estrazione dati non può più essere svolto utilizzando delle API ufficiali. Nella maggior parte dei casi sono presenti tuttavia delle API non ufficiali che permettono di ottenere informazioni relative a singoli post o ad un singolo account. Nel caso specifico di TikTok, social network nato solo in tempi recenti, non sono presenti né API ufficiali né API alternative che permettono l'estrazione delle informazioni per la costruzione dei dataset utili alla ricerca. Per questo motivo è stato necessario costruire un tool in Python in grado di scaricare tutti i commenti da ogni post di un determinato account.
+
+I dati raccolti vengono gestiti ed analizzati con l'ausilio di librerie quali Pandas e NumPy, universalmente utilizzati in presenza di grandi quantità di informazioni.
+
+\subsection{Web scraping}
+    Il Web scraping permette l'estrazione di dati da una pagina web simulando una navigazione di un normale utente. È stato utilizzato Selenium e Beautiful Soup rispettivamente per la simulazione della navigazione e la raccolta dei dati dalla struttura HTML della sezione commenti di ogni post. Si è reso altresì necessario adattare il più possibile il tool alle diverse configurazioni della pagina e ai vari sistemi di protezione che TikTok implementa per limitare la raccolta di dati automatica (Captcha in primis). Il processo per il download dei dati implica quindi l'apertura di un determinato post relativo ad un account, il caricamento di tutti i commenti e infine l'analisi dell'albero DOM (una rappresentazione a oggetti della pagina web) per l'estrazione del commento e dei suoi metadati. Per ogni commento vengono salvati il nome, l'identificativo univoco relativo all'account che ha commentato, l'immagine di profilo (utile per una successiva classificazione del genere) e il numero di like presenti al commento stesso.
+
+
+\subsection{Pulizia dei dati}
+    Prima dell'introduzione dei sistemi di identificazione dei discorsi d'odio ogni commento viene quanto più possibile pulito da ogni informazione accessoria non utile al processo di classificazione. Questa fase di pulizia dei dati è eseguita principalmente per minimizzare per quanto possibile la numerosità delle parole da analizzare e, di conseguenza, ottimizzare al meglio i tempi di calcolo richiesti nelle fasi successive.
+    Per ogni commento vengono eliminati tutti i tag verso altri profili (e.g. \textit{@nomeprofilo}) e caratteri non standard che potrebbero creare problemi nella fase di analisi.
+    Vengono anche riconosciuti ed eliminati manualmente messaggi di spam che riusultano poco utili nei vari passaggi di classificazione.
+
+
+
+
+
+\section{Analisi del lessico}
+Per una prima classificazione dei commenti scaricati viene utilizzato il lessico Hurtlex \cite{Hurtlex} contenente una raccolta di lemmi generalmente utilizzati nei commenti offensivi, aggressivi e denigratori. In particolare, ogni lemma appartiene ad una o più delle 17 categorie (quali ad esempio stereotipi etnici, disabilità fisiche, disabilità cognitive, omofobia, ecc.) e può essere classificato come conservativo o inclusivo. Nel primo caso il lemma ha un significato originale offensivo, nel secondo può assumere un significato offensivo solo se usato in determinati contesti. Si procede quindi con un confronto tra i lemmi che compongono i commenti scaricati e gli stessi riportati nel lessico, registrando la loro tipologia, la categoria di appartenenza e un identificativo univoco generato automaticamente.
+    
+\subsection{Lemmatizzazione}
+    I dati originali vengono ulteriormente puliti prima di affrontare la fase di lemmatizzazione: punteggiatura, emoji, sequenze non appartenenti all'alfabeto e tutte le stop words, ovvero parole poco significative al senso finale della frase, non sono presenti nel lessico e pertanto sono inconcludenti ai fini della classificazione.
+    Il risultato del precedente processo viene successivamente analizzato da Stanza \cite{Stanza}, una raccolta di modelli pre-addestrati dall'università di Stanford in grado di effettuare analisi sulla sintassi in varie lingue. 
+    
+    Per ogni parola di un commento viene estratto il lemma ottenendo la sua forma base e, successivamente, viene confrontato con con tutto il lessico Hurtlex. Tutti i commenti sono dunque classificati come non offensivi se nessun lemma ha trovato corrispondenza nel lessico o, come offensivi, se i commenti presentano uno o più lemmi segnalati nel lessico come potenzialmente denigratori.
+    Per ciascun commento sono specificati gli id univoci dei lemmi potenzialmente offensivi e un punteggio basato sul numero di occorrenze per ogni categoria.
+
+
+
+
+
+
+\section{Classificazione con BERT}
+Una seconda possibilità di classificazione è data dall'utilizzo di reti neurali profonde in grado di riconoscere e interpretare il linguaggio naturale dei commenti. Viene utilizzata la tecnica del fine tuning che consente di usare una rete neurale già addestrata per un task generico e, ritoccandone i pesi, specializzarla per un task più specifico.
+
+Data la complessità dei calcoli da svolgere e vista la dimensione della rete neurale profonda utilizzata, è stato necessario utilizzare hardware dedicato in grado di effettuare computazione parallela su schede grafiche Nvidia. Tra le diverse alternative si è scelta la piattaforma Colab di Google che permette la computazione in edge computing gratuitamente seppur con alcune limitazioni trascurabili sull'hardware e sui tempo di calcolo.
+
+\subsection{Classificazione manuale e linee guida adottate}
+    Durante il processo di fine tuning il modello necessita di dati etichettati da poter essere successivamente suddivisi in un dataset di train e un secondo dataset di test. È stato quindi necessario classificare manualmente un sottoinsieme di commenti originali in due classi: positivi e negativi. In questa fase delicata si è scelto di conservare quanto più possibile la tipologia di linguaggio e il gergo comune utilizzato su TikTok definendo delle linee guida da tenere a mente durante il processo di classificazione. 
+    
+    La classe di commenti positivi comprende non solo commenti generici ma anche quelli che mirano ad una difesa dell'influencer attaccato/a dai commenti classificati come negativi. Questa scelta rende sicuramente più difficile la fase di apprendimento visto l'utilizzo di un lessico molto simile tra commenti difensivi, classificati positivamente, e  quelli offensivi. Per descrivere al meglio la tipologia di classificazione appena esposta è di seguito fornito un esempio esplicativo a riguardo: "\textit{Wow mi hai migliorato la giornata}" e "\textit{Non ascoltare chi ti da della stupida}", sono entrambi classificati come commenti positivi mentre "\textit{Sei stupida e dovresti vergognarti}" è stato classificato come offensivo.
+    
+    La numerosità dei commenti negativi è risultata essere inferiore a quella dei commenti positivi a causa della moderazione effettuata già dal social network stesso al momento della pubblicazione. In totale sono stati classificati più di 2300 commenti di cui, circa il 15\% sono offensivi.
+
+\subsection{Scelta del modello e fine tuning}
+    La scelta del modello è sicuramente vincolata dalla lingua utilizzata nei commenti. Tra i diversi modelli a disposizione sulla piattaforma Huggingface \cite{huggingface} ne sono stati selezionati due per la lingua italiana: \textit{BERT base italian uncased} e \textit{BERT base italian xxl cased}: entrambi sono stati precedentemente addestrati dai laboratori di ricerca Google sul testo integrale di Wikipedia e su un corpus composto da articoli e testi ottenuti da pubblicazioni online. La principale differenza tra i due riguarda la dimensione del dataset utilizzato nella fase di addestramento iniziale e la capacità di saper riconoscere i caratteri maiuscoli da quelli maiuscoli. Sono stati considerati anche modelli capaci di riconoscere più lingue ma non verranno presi in considerazione nella fase sperimentale vista la loro bassa performance per la sola lingua italiana.
+    
+    
+\subsection{Costruzione della rete neurale con BERT}
+    Per poter controllare al meglio ogni parametro della rete neurale è stata scelta la libreria PyTorch \cite{pytorch}, ampiamente utilizzata nel mondo della ricerca per applicazioni riguardanti la visione digitale e l'elaborazione del linguaggio naturale.
+    
+    Dopo aver diviso il dataset prodotto dalla precedente fase di classificazione manuale ogni commento viene scomposto in tokens interpretabili dal primo layer di input del modello BERT. Più precisamente viene stimata una lunghezza massima fissata di 128 caratteri per commento anche se, mediamente, la lunghezza è di molto inferiore. Una volta generati gli input, ed effettuate le dovute conversioni in tensori, viene costruita una rete neurale semplice in grado di interpretare l'output del modello BERT selezionato precedentemente. La scelta dei parametri prende spunto dai consigli forniti dagli autori del modello stesso, sono state tuttavia apportate delle leggere modifiche al numero di epoche previste e alla dimensione di batch per cercare la combinazione che portasse al risultato migliore.
+    
+\subsection{Ottimizzazioni effettuate sulla rete neurale}
+    Ottenuti i risultati dai due modelli BERT citati precedentemente si è scelto di ottimizzare al meglio la rete neurale per cercare di aumentare il più possibile la capacità di classificazione dei commenti offensivi e non. Vengono quindi effettuate una serie di modifiche eliminando l'ultimo layer da BERT dedicato alla classificazione (chiamato \textit{pooler layer}) in modo da aumentare la rete neurale di base con dei layer aggiuntivi, la cui scelta è influenzata dalle caratteristiche peculiari di quest'ultimi.
+    
+    L'elaborazione del linguaggio naturale, prima dell'arrivo dei modelli basati su reti di tipo transformer, era affidata alle reti neurali ricorrenti in grado di "ricordare", seppur in forma parziale, le informazioni date come input. Cercando di sfruttare questa caratteristica viene quindi introdotto un layer aggiuntivo di tipo Bi-LSTM, acronimo di \textit{Bi-directional long short term memory}. Lo scopo è quello di ottenere una rappresentazione eseguita dal modello BERT della frase in input e sfruttare le caratteristiche di memoria di una rete neurale ricorrente. Come anticipato si è scelto di utilizzare un layer di tipo Bi-LSTM che, grazie alla sua bidirezionalità, permette di accedere in ogni istante alle informazioni precedenti e successive riuscendo quindi a conservare il lavoro svolto da BERT nella rappresentazione del testo in input contemporaneamente rafforzando i pesi delle parole adiacenti a quella considerata.
+    
+    Una seconda opzione per migliorare le prestazioni è data dall'aggiunta di un layer lineare in coda al modello BERT. Questa tecnica permette di specializzare la rete per un task ancora più specifico migliorando quindi la rappresentazione del testo già effettuata da BERT. In seguito ad alcuni test è stato necessario inserire anche un layer di regolarizzazione in grado mitigare il fenomeno di overfitting. Verranno riportati i risultati ottenuti con un livello aggiuntivo di Dropout in grado di eliminare alcuni nodi presi in maniera casuale con una probabilità fissata dello 0.2\%.
+

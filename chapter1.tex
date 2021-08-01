@@ -1,0 +1,27 @@
+%!TEX root = ../thesis.tex
+%*******************************************************************************
+%****************************** Third Chapter **********************************
+%*******************************************************************************
+\chapter{Introduzione}
+\hspace{0,5cm} 
+\section{Il problema dei contenuti offensivi nei social Network}
+
+L'uso dei social network è ormai da molti anni entrato nelle abitudini quotidiane di una gran parte della popolazione mondiale: il loro uso semplice e immediato permette a persone di ogni età di interfacciarsi con un mondo infinito di informazioni che rispecchiano la realtà che ordinariamente ci circonda. Tra le innumerevoli opportunità offerte e gli enormi vantaggi della vita online spesso la regolarizzazione dei contenuti non riesce a mantenere il passo. Risolvere questo problema rappresenta un'ardua sfida sopratutto in un mondo virtuale dove la possibilità di mantenere una pseudo anonimità rende il lavoro di gran lunga più complicato che nel mondo reale.
+
+La quantità di dati presenti sulle piattaforme social supera di gran lunga la capacità di controllo a disposizione delle aziende proprietarie e per questo motivo, solamente negli ultimi anni, la ricerca si sta orientando verso il riconoscimento automatico dei contenuti offensivi. Il compito di supervisionare e riconoscere violazioni delle norme di servizio, o in questo caso quello che è in gergo chiamato \textit{hate speech}, è tuttora affidato a un gruppo ristretto di lavoratori chiamati ironicamente "\textit{Deciders}" \cite{Deciders}. Nonostante gli aiuti forniti da algoritmi di riconoscimento automatico, rimane comunque necessaria una supervisione umana che implica un lavoro decisamente più grande di quello che si possa comunemente immaginare. Il perfezionamento di algoritmi in grado di riconoscere automaticamente contenuti offensivi risulta quindi essere sempre più una questione di urgenza e di assoluta priorità per tutelare nel miglior modo possibile gli utenti che frequentano quotidianamente le piattaforme social.
+
+
+
+\subsection{Panoramica generale su TikTok}
+    Tra tutti i diversi social network, ormai consolidati e conosciuti da diversi anni, TikTok risulta essere non solo l'ultimo arrivato ma anche quello che sta subendo una crescita maggiore nell'ultimo periodo. Il suo ambiente, frequentato prevalentemente da giovanissimi, lo rende per sua stessa natura in continua evoluzione con trand che ne cambiano le modalità di utilizzo quasi giornalmente. Allo stato attuale il controllo dei contenuti offensivi è eseguito principalmente in maniera manuale basandosi sulla sola segnalazione degli utenti o sull'azione dei moderatori che creano i contenuti sulla piattaforma.
+    La mancanza di un sistema automatico efficace in grado di classificare ciò che risulta essere offensivo rende complicato contenere, sopratutto in caso di creator con un grande seguito, i discorsi d'odio sulla piattaforma.
+
+    L'obiettivo è quindi migliorare gli strumenti di identificazione fornendosi delle più recenti ricerche nel campo del riconoscimento del linguaggio naturale per rendere TikTok, o più in generale ogni piattaforma social online, un luogo virtuale più sicuro per le persone che lo frequentano ogni giorno.
+
+\section{Presentazione del lavoro svolto}
+
+La ricerca di un sistema di classificazione efficace, capace di comprendere le più piccole sfumature del linguaggio sapendone interpretare ogni piccolo aspetto, è sempre stato tra i compiti più difficili per dei sistemi automatici privi di esperienza. Il lavoro svolto mira a fornire una soluzione efficace a questo problema esplorando le varie possibilità offerte della comunità scientifica nel campo del riconoscimento del linguaggio naturale e, in particolare, vengono proposte diverse soluzioni in grado di identificare i discorsi d'odio. 
+
+Come primo approccio è stato progettato un sistema capace di riconoscere parole offensive e denigratorie nei commenti scaricati: i risultati ottenuti non riescono ad essere sufficientemente precisi nell'identificazione dei commenti negativi, problematica dovuta ad una serie di caratteristiche legate alla comunicazione su TikTok. 
+Una valida alternativa è rappresentata dall'utilizzo di reti neurali profonde in grado di apprendere al meglio il contesto di un commento. Attualmente lo stato dell'arte è rappresentato dai modelli BERT di Google la cui capacità di codifica del testo riesce efficacemente nella rappresentazione di ogni parola nel contesto entro la quale è inserita. I risultati di questo approccio risultano essere più che validi se confrontati con gli stessi ottenuti dalla classificazione lessicale. 
+Viene infine proposto un ultimo lavoro di ottimizzazione, modificando la rete neurale originale e cercando di migliorarne le relative le prestazioni. Il sistema risultante evidenzia un'ottima performance tanto da riuscire nella maggior parte dei casi a comprendere appieno il contesto e il senso dei commenti pubblicati online.
